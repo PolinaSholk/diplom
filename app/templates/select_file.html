@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Выберите файл для анализа</h2>
+
+<div class="list-group mt-3">
+    {% for file in files %}
+    <a href="/predictions/{{ file.id }}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ file.filename }}</h5>
+            <small>{{ file.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        </div>
+        <p class="mb-1">Размер: {{ (file.file_size/1024)|round(2) }} KB</p>
+    </a>
+    {% else %}
+    <div class="alert alert-info">Нет загруженных файлов</div>
+    {% endfor %}
+</div>
+
+<a href="/upload" class="btn btn-primary mt-3">Загрузить новый файл</a>
+{% endblock %}

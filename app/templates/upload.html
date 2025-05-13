@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Загрузка файла данных</h2>
+
+<form action="/uploadfile/" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="file" class="form-label">Выберите CSV файл (разделитель - точка с запятой):</label>
+        <input class="form-control" type="file" id="file" name="file" accept=".csv" required>
+        <div class="form-text">Файл должен содержать колонки: atm_id, timestamp, amount</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Загрузить и проанализировать</button>
+</form>
+
+{% if message %}
+<div class="alert alert-success mt-3">{{ message }}</div>
+{% endif %}
+
+{% if table_html %}
+<div class="mt-4">
+    <h4>Результаты анализа:</h4>
+    <div class="table-responsive">
+        {{ table_html|safe }}
+    </div>
+</div>
+{% endif %}
+
+{% if error %}
+<div class="alert alert-danger mt-3">{{ error }}</div>
+{% endif %}
+
+<script>
+function scheduleCollection(atmId) {
+    fetch('/schedule_collection/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            atm_id: atmId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert(`Инкассация для банкомата ${atmId} запланирована!`);
+        }
+    });
+}
+</script>
+{% endblock %}

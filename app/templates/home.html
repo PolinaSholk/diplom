@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Добро пожаловать, {{ username }}!</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Загрузка файлов</h5>
+                    <p class="card-text">Загрузите CSV файл для анализа</p>
+                    <a href="/upload" class="btn btn-primary">Перейти к загрузке</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Прогнозирование</h5>
+                    <p class="card-text">Просмотр прогнозов на основе загруженных данных</p>
+                    <a href="/predictions" class="btn btn-primary">Перейти к прогнозам</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

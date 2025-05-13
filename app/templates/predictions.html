@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Прогнозирование состояния банкоматов</h2>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+{% if predictions %}
+<div class="card mb-3">
+    <div class="card-header">
+        Последнее обновление: {{ last_update }}
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Период</th>
+                    <th>Время</th>
+                    <th>Прогнозируемый остаток</th>
+                    <th>Статус</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pred in predictions %}
+                <tr>
+                    <td>{{ pred.period }}</td>
+                    <td>{{ pred.time }}</td>
+                    <td>{{ pred.prediction }}</td>
+                    <td>
+                        {% if pred.needs_maintenance %}
+                        <span class="badge bg-danger">Требуется обслуживание</span>
+                        {% else %}
+                        <span class="badge bg-success">Норма</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm {% if pred.needs_maintenance %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+                                onclick="scheduleMaintenance('{{ pred.period }}')">
+                            Запланировать обслуживание
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="/upload" class="btn btn-secondary mt-3">
+    Вернуться к загрузке файлов
+</a>
+</div>
+{% else %}
+<div class="alert alert-info">
+    Прогнозы еще не сгенерированы. Загрузите данные и попробуйте снова.
+</div>
+{% endif %}
+
+<script>
+function scheduleMaintenance(period) {
+    fetch('/schedule_maintenance/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            period: period
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert('Обслуживание запланировано для периода: ' + period);
+        }
+    });
+}
+</script>
+{% endblock %}
